@@ -9,8 +9,11 @@ try {
 }
 
 const ISSUER_ID = process.env.GOOGLE_WALLET_ISSUER_ID;
-const CLASS_ID = `${ISSUER_ID}.${process.env.GOOGLE_WALLET_CLASS_ID || 'npc_loyalty'}`;
+const CLASS_ID = `${ISSUER_ID}.${process.env.GOOGLE_WALLET_CLASS_ID || 'npc_generic'}`;
 const BASE_URL = 'https://walletobjects.googleapis.com/walletobjects/v1';
+const SERVER_URL = process.env.RAILWAY_PUBLIC_DOMAIN
+  ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+  : 'http://localhost:3000';
 
 async function getAccessToken() {
   const auth = new google.auth.GoogleAuth({
@@ -42,25 +45,25 @@ async function apiRequest(method, path, body) {
 }
 
 async function ensureClass() {
-  const { status } = await apiRequest('GET', `/loyaltyClass/${encodeURIComponent(CLASS_ID)}`);
+  const { status } = await apiRequest('GET', `/genericClass/${encodeURIComponent(CLASS_ID)}`);
 
   if (status === 404) {
-    await apiRequest('POST', '/loyaltyClass', {
+    await apiRequest('POST', '/genericClass', {
       id: CLASS_ID,
-      issuerName: process.env.COMMUNITY_NAME || 'Nosso Podcast de Cinema',
-      programName: process.env.COMMUNITY_NAME || 'Nosso Podcast de Cinema',
-      programLogo: {
-        sourceUri: { uri: 'https://i.imgur.com/Belkjhw.png' },
-        contentDescription: { defaultValue: { language: 'pt-BR', value: 'Logo' } }
-      },
-      heroImage: {
-        sourceUri: { uri: 'https://i.imgur.com/aSy8rss.png' },
-        contentDescription: { defaultValue: { language: 'pt-BR', value: 'Banner' } }
-      },
-      hexBackgroundColor: process.env.CARD_BG_COLOR || '#8a197e',
-      reviewStatus: 'UNDER_REVIEW'
+      classTemplateInfo: {
+        cardTemplateOverride: {
+          cardRowTemplateInfos: [
+            {
+              twoItems: {
+                startItem: { firstValue: { fields: [{ fieldPath: 'object.textModulesData["member_since"]' }] } },
+                endItem:   { firstValue: { fields: [{ fieldPath: 'object.textModulesData["valid_until"]' }] } }
+              }
+            }
+          ]
+        }
+      }
     });
-    console.log('Google Wallet loyalty class criada:', CLASS_ID);
+    console.log('Google Wallet generic class criada:', CLASS_ID);
   }
 }
 
@@ -72,16 +75,29 @@ function buildPassObject(member, objectId) {
   return {
     id: objectId,
     classId: CLASS_ID,
+    genericType: 'GENERIC_TYPE_UNSPECIFIED',
     state: member.status === 'active' ? 'ACTIVE' : 'INACTIVE',
-    accountId: member.member_code,
-    accountName: member.name,
-    loyaltyPoints: {
-      label: member.plan,
-      balance: { string: member.plan }
+    cardTitle: {
+      defaultValue: { language: 'pt-BR', value: process.env.COMMUNITY_NAME || 'Nosso Podcast de Cinema' }
+    },
+    subheader: {
+      defaultValue: { language: 'pt-BR', value: member.plan }
+    },
+    header: {
+      defaultValue: { language: 'pt-BR', value: member.name }
+    },
+    hexBackgroundColor: bgColor,
+    logo: {
+      sourceUri: { uri: `${SERVER_URL}/images/titulo.png` },
+      contentDescription: { defaultValue: { language: 'pt-BR', value: 'Nosso Podcast de Cinema' } }
+    },
+    heroImage: {
+      sourceUri: { uri: `${SERVER_URL}/images/BANNER1_1-2.png` },
+      contentDescription: { defaultValue: { language: 'pt-BR', value: 'Banner do podcast' } }
     },
     textModulesData: [
-      { id: 'valid_until', header: 'Válido até', body: validStr },
-      { id: 'member_since', header: 'Membro desde', body: sinceStr }
+      { id: 'member_since', header: 'Membro desde', body: sinceStr },
+      { id: 'valid_until', header: 'Válido até', body: validStr }
     ]
   };
 }
@@ -94,12 +110,12 @@ async function createPass(member) {
   const objectId = `${CLASS_ID}.${member.member_code}`;
   const passObject = buildPassObject(member, objectId);
 
-  const { status } = await apiRequest('GET', `/loyaltyObject/${encodeURIComponent(objectId)}`);
+  const { status } = await apiRequest('GET', `/genericObject/${encodeURIComponent(objectId)}`);
 
   if (status === 404) {
-    await apiRequest('POST', '/loyaltyObject', passObject);
+    await apiRequest('POST', '/genericObject', passObject);
   } else {
-    await apiRequest('PATCH', `/loyaltyObject/${encodeURIComponent(objectId)}`, passObject);
+    await apiRequest('PATCH', `/genericObject/${encodeURIComponent(objectId)}`, passObject);
   }
 
   await require('../db').pool.query(
@@ -113,7 +129,7 @@ async function createPass(member) {
       aud: 'google',
       origins: [],
       typ: 'savetowallet',
-      payload: { loyaltyObjects: [{ id: objectId }] }
+      payload: { genericObjects: [{ id: objectId }] }
     },
     credentials.private_key,
     { algorithm: 'RS256' }
@@ -129,7 +145,7 @@ async function updatePass(member) {
 async function deactivatePass(member) {
   if (!credentials || !member.google_object_id) return;
 
-  await apiRequest('PATCH', `/loyaltyObject/${encodeURIComponent(member.google_object_id)}`, {
+  await apiRequest('PATCH', `/genericObject/${encodeURIComponent(member.google_object_id)}`, {
     state: 'INACTIVE'
   });
 }
