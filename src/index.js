@@ -3,6 +3,7 @@ const express = require('express');
 const { initDb } = require('./db');
 const passesRouter = require('./routes/passes');
 const walletRouter = require('./routes/wallet');
+const imagesRouter = require('./routes/images');
 
 const app = express();
 app.use(express.json());
@@ -11,6 +12,7 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/webhook', passesRouter);
 app.use('/cron', walletRouter);
+app.use('/images', imagesRouter);
 
 const PORT = process.env.PORT || 3000;
 
