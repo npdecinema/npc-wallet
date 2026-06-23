@@ -91,6 +91,9 @@ function buildPassObject(member, objectId) {
       sourceUri: { uri: `${SERVER_URL}/images/logo_circulo.png` },
       contentDescription: { defaultValue: { language: 'pt-BR', value: 'Capa Nosso Podcast de Cinema' } }
     },
+    validTimeInterval: {
+      end: { date: new Date(member.valid_until).toISOString() }
+    },
     // heroImage: {
     //   sourceUri: { uri: `${SERVER_URL}/images/titulo.png` },
     //   contentDescription: { defaultValue: { language: 'pt-BR', value: 'Banner do podcast' } }
