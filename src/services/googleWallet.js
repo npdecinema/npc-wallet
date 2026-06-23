@@ -89,7 +89,7 @@ function buildPassObject(member, objectId) {
     },
     hexBackgroundColor: bgColor,
     logo: {
-      sourceUri: { uri: `${SERVER_URL}/images/logo_circulo` },
+      sourceUri: { uri: `${SERVER_URL}/images/logo_circulo.png` },
       contentDescription: { defaultValue: { language: 'pt-BR', value: 'Capa Nosso Podcast de Cinema' } }
     },
     heroImage: {
