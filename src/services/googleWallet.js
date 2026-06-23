@@ -92,10 +92,10 @@ function buildPassObject(member, objectId) {
       sourceUri: { uri: `${SERVER_URL}/images/logo_circulo.png` },
       contentDescription: { defaultValue: { language: 'pt-BR', value: 'Capa Nosso Podcast de Cinema' } }
     },
-    heroImage: {
-      sourceUri: { uri: `${SERVER_URL}/images/titulo.png` },
-      contentDescription: { defaultValue: { language: 'pt-BR', value: 'Banner do podcast' } }
-    },
+    // heroImage: {
+    //   sourceUri: { uri: `${SERVER_URL}/images/titulo.png` },
+    //   contentDescription: { defaultValue: { language: 'pt-BR', value: 'Banner do podcast' } }
+    // },
     textModulesData: [
       { id: 'member_since', header: 'Membro desde', body: sinceStr },
       { id: 'valid_until', header: 'Válido até', body: validStr }
