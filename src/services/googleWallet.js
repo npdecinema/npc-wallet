@@ -78,8 +78,7 @@ function buildPassObject(member, objectId) {
     genericType: 'GENERIC_TYPE_UNSPECIFIED',
     state: member.status === 'active' ? 'ACTIVE' : 'INACTIVE',
     cardTitle: {
-      // defaultValue: { language: 'pt-BR', value: process.env.COMMUNITY_NAME || 'Nosso Podcast de Cinema' }
-      defaultValue: { language: 'pt-BR', value: 'cardTitle' }
+      defaultValue: { language: 'pt-BR', value: process.env.COMMUNITY_NAME || 'Nosso Podcast de Cinema' }
     },
     subheader: {
       defaultValue: { language: 'pt-BR', value: member.plan }
