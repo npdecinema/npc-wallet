@@ -78,7 +78,8 @@ function buildPassObject(member, objectId) {
     genericType: 'GENERIC_TYPE_UNSPECIFIED',
     state: member.status === 'active' ? 'ACTIVE' : 'INACTIVE',
     cardTitle: {
-      defaultValue: { language: 'pt-BR', value: process.env.COMMUNITY_NAME || 'Nosso Podcast de Cinema' }
+      // defaultValue: { language: 'pt-BR', value: process.env.COMMUNITY_NAME || 'Nosso Podcast de Cinema' }
+      defaultValue: { language: 'pt-BR', value: 'cardTitle' }
     },
     subheader: {
       defaultValue: { language: 'pt-BR', value: member.plan }
@@ -88,11 +89,11 @@ function buildPassObject(member, objectId) {
     },
     hexBackgroundColor: bgColor,
     logo: {
-      sourceUri: { uri: `${SERVER_URL}/images/titulo.png` },
-      contentDescription: { defaultValue: { language: 'pt-BR', value: 'Nosso Podcast de Cinema' } }
+      sourceUri: { uri: `${SERVER_URL}/images/logo_circulo` },
+      contentDescription: { defaultValue: { language: 'pt-BR', value: 'Capa Nosso Podcast de Cinema' } }
     },
     heroImage: {
-      sourceUri: { uri: `${SERVER_URL}/images/BANNER1_1-2.png` },
+      sourceUri: { uri: `${SERVER_URL}/images/titulo.png` },
       contentDescription: { defaultValue: { language: 'pt-BR', value: 'Banner do podcast' } }
     },
     textModulesData: [
