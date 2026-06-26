@@ -101,7 +101,12 @@ function buildPassObject(member, objectId) {
     textModulesData: [
       { id: 'member_since', header: 'Membro desde', body: sinceStr },
       { id: 'valid_until', header: 'Válido até', body: validStr }
-    ]
+    ],
+    barcode: {
+      type: 'QR_CODE',
+      value: `${SERVER_URL}/v/${member.member_code}/${member.validation_token}`,
+      alternateText: member.member_code
+    }
   };
 }
 

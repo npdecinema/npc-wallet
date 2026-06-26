@@ -15,14 +15,15 @@ function defaultValidUntil() {
 async function createMember({ circleId, name, email, plan, validUntil }) {
   const tempCode = uuidv4();
   const vUntil = validUntil || defaultValidUntil();
+  const token = require('crypto').randomBytes(6).toString('hex');
 
   const { rows } = await pool.query(
-    `INSERT INTO members (circle_id, name, email, plan, valid_until, member_code)
-     VALUES ($1, $2, $3, $4, $5, $6)
+    `INSERT INTO members (circle_id, name, email, plan, valid_until, member_code, validation_token)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      ON CONFLICT (circle_id) DO UPDATE
        SET name=$2, email=$3, plan=$4, updated_at=NOW()
      RETURNING *`,
-    [circleId, name, email, plan || 'Membro', vUntil, tempCode]
+    [circleId, name, email, plan || 'Membro', vUntil, tempCode, token]
   );
 
   const member = rows[0];
