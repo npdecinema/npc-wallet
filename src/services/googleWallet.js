@@ -105,7 +105,7 @@ function buildPassObject(member, objectId) {
     barcode: {
       type: 'QR_CODE',
       value: `${SERVER_URL}/v/${member.member_code}/${member.validation_token}`,
-      alternateText: member.member_code
+      alternateText: `Validade: ${validStr}`
     }
   };
 }
