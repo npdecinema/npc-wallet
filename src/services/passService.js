@@ -8,7 +8,7 @@ function generateMemberCode(prefix, id) {
 
 function defaultValidUntil() {
   const d = new Date();
-  d.setFullYear(d.getFullYear() + 1);
+  d.setMonth(d.getMonth() + 1);
   return d.toISOString().split('T')[0];
 }
 
@@ -79,4 +79,21 @@ async function getMembersDueForRenewal() {
   return rows;
 }
 
-module.exports = { createMember, getMemberByCircleId, cancelMember, renewMember, getMembersDueForRenewal };
+async function getActiveCircleIds() {
+  const { rows } = await pool.query(
+    "SELECT circle_id FROM members WHERE status='active'"
+  );
+  return rows.map(r => r.circle_id);
+}
+
+async function expireRenewals() {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 1);
+  const vUntil = d.toISOString().split('T')[0];
+  await pool.query(
+    "UPDATE members SET valid_until=$1, updated_at=NOW() WHERE status='active' AND valid_until <= CURRENT_DATE + INTERVAL '5 days'",
+    [vUntil]
+  );
+}
+
+module.exports = { createMember, getMemberByCircleId, cancelMember, renewMember, getMembersDueForRenewal, getActiveCircleIds, expireRenewals };

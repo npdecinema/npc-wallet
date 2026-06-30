@@ -13,6 +13,7 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/webhook', passesRouter);
 app.use('/cron', walletRouter);
 app.use('/v', require('./routes/validate'));
+app.use('/sync', require('./routes/sync'));
 
 const PORT = process.env.PORT || 3000;
 
