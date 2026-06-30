@@ -17,6 +17,14 @@ app.use('/sync', require('./routes/sync'));
 
 const PORT = process.env.PORT || 3000;
 
+const cron = require('node-cron');
+const { syncSubscribers } = require('./services/syncService');
+
+// Roda a sincronização a cada 15 minutos
+cron.schedule('*/15 * * * *', () => {
+  syncSubscribers().catch(err => console.error('[cron] erro:', err.message));
+});
+
 async function start() {
   await initDb();
   app.listen(PORT, () => {
