@@ -29,7 +29,7 @@ router.get('/:publicUid', async (req, res) => {
 
 function pagina(titulo, texto, walletUrl) {
   const botao = walletUrl
-    ? `<a href="${walletUrl}"><img src="https://celebrated-reverence-production-56f2.up.railway.app/images/br_add_to_google_wallet.png" alt="Adicionar ao Google Wallet" style="height:56px"></a>`
+    ? `<a href="${walletUrl}" style="display:inline-block;background:#2a1a0e;color:#f5efe6;text-decoration:none;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:500">Adicionar ao Google Wallet</a>`
     : '';
   return `<!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
