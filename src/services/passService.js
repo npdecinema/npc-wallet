@@ -12,18 +12,18 @@ function defaultValidUntil() {
   return d.toISOString().split('T')[0];
 }
 
-async function createMember({ circleId, name, email, plan, validUntil }) {
+async function createMember({ circleId, name, email, plan, validUntil, publicUid }) {
   const tempCode = uuidv4();
   const vUntil = validUntil || defaultValidUntil();
   const token = require('crypto').randomBytes(6).toString('hex');
 
   const { rows } = await pool.query(
-    `INSERT INTO members (circle_id, name, email, plan, valid_until, member_code, validation_token)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `INSERT INTO members (circle_id, name, email, plan, valid_until, member_code, validation_token, public_uid)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
      ON CONFLICT (circle_id) DO UPDATE
-       SET name=$2, email=$3, plan=$4, updated_at=NOW()
+       SET name=$2, email=$3, plan=$4, public_uid=$8, updated_at=NOW()
      RETURNING *`,
-    [circleId, name, email, plan || 'Membro', vUntil, tempCode, token]
+    [circleId, name, email, plan || 'Membro', vUntil, tempCode, token, publicUid || null]
   );
 
   const member = rows[0];
@@ -96,4 +96,12 @@ async function expireRenewals() {
   );
 }
 
-module.exports = { createMember, getMemberByCircleId, cancelMember, renewMember, getMembersDueForRenewal, getActiveCircleIds, expireRenewals };
+async function getMemberByPublicUid(publicUid) {
+  const { rows } = await pool.query(
+    'SELECT * FROM members WHERE public_uid=$1',
+    [publicUid]
+  );
+  return rows[0] || null;
+}
+
+module.exports = { createMember, getMemberByCircleId, getMemberByPublicUid, cancelMember, renewMember, getMembersDueForRenewal, getActiveCircleIds, expireRenewals };

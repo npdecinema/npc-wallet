@@ -10,7 +10,6 @@ async function circleGet(path) {
   return res.json();
 }
 
-// Lista todos os community_member_id no grupo de assinantes (com paginação)
 async function listSubscriberIds() {
   const ids = [];
   let page = 1;
@@ -23,13 +22,13 @@ async function listSubscriberIds() {
   return ids;
 }
 
-// Busca nome e email de um membro
 async function getMemberDetails(communityMemberId) {
   const m = await circleGet(`/community_members/${communityMemberId}`);
   return {
     circleId: String(m.id),
     name: [m.first_name, m.last_name].filter(Boolean).join(' ') || 'Membro',
-    email: m.email || ''
+    email: m.email || '',
+    publicUid: m.public_uid || ''
   };
 }
 
