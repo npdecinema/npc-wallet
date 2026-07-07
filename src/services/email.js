@@ -1,19 +1,25 @@
 const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_APP_PASSWORD
-  }
-});
+const dns = require('dns').promises;
 
 const SERVER_URL = process.env.RAILWAY_PUBLIC_DOMAIN
   ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
   : 'http://localhost:3000';
+
+async function getTransporter() {
+  // Resolve o IPv4 do Gmail explicitamente
+  const { address } = await dns.lookup('smtp.gmail.com', { family: 4 });
+  return nodemailer.createTransport({
+    host: address,
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    tls: { servername: 'smtp.gmail.com' },
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_APP_PASSWORD
+    }
+  });
+}
 
 async function sendCarteirinhaEmail(member) {
   if (!member.email) {
@@ -22,6 +28,7 @@ async function sendCarteirinhaEmail(member) {
   }
 
   const link = `${SERVER_URL}/carteirinha/${member.public_uid}`;
+  const transporter = await getTransporter();
 
   await transporter.sendMail({
     from: `"Nosso Podcast de Cinema" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
