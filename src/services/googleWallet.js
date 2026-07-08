@@ -94,10 +94,10 @@ function buildPassObject(member, objectId) {
     validTimeInterval: {
       end: { date: new Date(member.valid_until).toISOString() }
     },
-    // heroImage: {
-    //   sourceUri: { uri: `${SERVER_URL}/images/titulo.png` },
-    //   contentDescription: { defaultValue: { language: 'pt-BR', value: 'Banner do podcast' } }
-    // },
+    heroImage: {
+      sourceUri: { uri: `${SERVER_URL}/images/google-io-hero-npc.jpg` },
+      contentDescription: { defaultValue: { language: 'pt-BR', value: 'Hero Image Nosso Podcast de Cinema' } }
+    },
     textModulesData: [
       { id: 'member_since', header: 'Membro desde', body: sinceStr },
       { id: 'valid_until', header: 'Válido até', body: validStr }
