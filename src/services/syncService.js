@@ -2,7 +2,7 @@ const { listSubscriberIds, getMemberDetails } = require('./circle');
 const { createMember, cancelMember, getActiveCircleIds, expireRenewals } = require('./passService');
 const { createPass, deactivatePass } = require('./googleWallet');
 const { pool } = require('../db');
-const { sendCarteirinhaEmail } = require('./email');
+// const { sendCarteirinhaEmail } = require('./email');
 
 async function syncSubscribers() {
   const circleIdsNoGrupo = (await listSubscriberIds()).map(String);
@@ -16,7 +16,7 @@ async function syncSubscribers() {
     const det = await getMemberDetails(circleId);
     const member = await createMember(det);
     await createPass(member);
-    await sendCarteirinhaEmail(member).catch(e => console.error('[email] falha:', e.message));
+    // await sendCarteirinhaEmail(member).catch(e => console.error('[email] falha:', e.message));
     criados.push(member.member_code);
   }
 

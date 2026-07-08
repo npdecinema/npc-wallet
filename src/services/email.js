@@ -6,7 +6,6 @@ const SERVER_URL = process.env.RAILWAY_PUBLIC_DOMAIN
   : 'http://localhost:3000';
 
 async function getTransporter() {
-  // Resolve o IPv4 do Gmail explicitamente
   const { address } = await dns.lookup('smtp.gmail.com', { family: 4 });
   return nodemailer.createTransport({
     host: address,
