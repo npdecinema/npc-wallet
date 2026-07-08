@@ -9,7 +9,7 @@ router.get('/:publicUid', async (req, res) => {
 
     if (!member) {
       return res.status(404).send(pagina('Carteirinha não encontrada',
-        'Não encontramos sua carteirinha. Se você assinou recentemente, aguarde alguns minutos e tente novamente.', null));
+        'Se você assinou recentemente, pode demorar até 15 minutos para sua carteirinha ser gerada. Caso o problema persista, entre em contato diretamente conosco: npdecinema@periprod.com.', null));
     }
 
     if (member.status !== 'active') {
@@ -19,7 +19,7 @@ router.get('/:publicUid', async (req, res) => {
 
     const walletUrl = await createPass(member);
     res.send(pagina(`Olá, ${member.name}!`,
-      'Sua carteirinha do Nosso Podcast de Cinema está pronta. Toque no botão abaixo para adicioná-la ao Google Wallet.',
+      'Sua carteirinha do Nosso Podcast de Cinema está pronta.',
       walletUrl));
   } catch (err) {
     console.error('Carteirinha error:', err.message);
