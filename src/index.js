@@ -16,6 +16,7 @@ app.use('/cron', walletRouter);
 app.use('/v', require('./routes/validate'));
 app.use('/sync', require('./routes/sync'));
 app.use('/carteirinha', require('./routes/carteirinha'));
+app.use('/apple', require('./routes/apple'));
 
 const PORT = process.env.PORT || 3000;
 

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { createMember, getMemberByCircleId, cancelMember, renewMember } = require('../services/passService');
 const { createPass, updatePass, deactivatePass } = require('../services/googleWallet');
+const { createOrUpdatePkpass } = require('../services/appleWallet');
 
 function verifySecret(req, res, next) {
   const secret = req.headers['x-webhook-secret'];
@@ -23,6 +24,9 @@ router.post('/member/created', verifySecret, async (req, res) => {
     });
 
     const walletUrl = await createPass(member);
+    await createOrUpdatePkpass(member).catch(err =>
+      console.error('[apple] falha ao criar pass:', err.message)
+    );
 
     console.log(`Carteirinha criada: ${member.member_code} — ${name}`);
     res.json({ success: true, member_code: member.member_code, wallet_url: walletUrl });
@@ -40,6 +44,8 @@ router.post('/member/cancelled', verifySecret, async (req, res) => {
     if (!member) return res.status(404).json({ error: 'Membro não encontrado' });
 
     await deactivatePass(member);
+    // Apple não tem um "estado inativo" equivalente — a prática é parar de servir
+    // o pass atualizado (ver comentário em routes/apple.js, GET /v1/passes/...)
 
     console.log(`Carteirinha cancelada: ${member.member_code}`);
     res.json({ success: true, member_code: member.member_code });
@@ -57,6 +63,9 @@ router.post('/member/renewed', verifySecret, async (req, res) => {
     if (!member) return res.status(404).json({ error: 'Membro não encontrado' });
 
     const walletUrl = await updatePass(member);
+    await createOrUpdatePkpass(member).catch(err =>
+      console.error('[apple] falha ao renovar pass:', err.message)
+    );
 
     console.log(`Carteirinha renovada: ${member.member_code}`);
     res.json({ success: true, member_code: member.member_code, wallet_url: walletUrl });

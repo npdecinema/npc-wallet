@@ -1,6 +1,7 @@
 const { listSubscriberIds, getMemberDetails } = require('./circle');
 const { createMember, cancelMember, getActiveCircleIds, expireRenewals } = require('./passService');
 const { createPass, deactivatePass } = require('./googleWallet');
+const { createOrUpdatePkpass } = require('./appleWallet');
 const { pool } = require('../db');
 // const { sendCarteirinhaEmail } = require('./email');
 
@@ -16,6 +17,9 @@ async function syncSubscribers() {
     const det = await getMemberDetails(circleId);
     const member = await createMember(det);
     await createPass(member);
+    await createOrUpdatePkpass(member).catch(err =>
+      console.error('[apple] falha ao criar pass:', err.message)
+    );
     // await sendCarteirinhaEmail(member).catch(e => console.error('[email] falha:', e.message));
     criados.push(member.member_code);
   }
@@ -28,7 +32,12 @@ async function syncSubscribers() {
 
   await expireRenewals();
   const { rows } = await pool.query("SELECT * FROM members WHERE status='active' AND valid_until <= CURRENT_DATE + INTERVAL '5 days'");
-  for (const m of rows) await createPass(m);
+  for (const m of rows) {
+    await createPass(m);
+    await createOrUpdatePkpass(m).catch(err =>
+      console.error('[apple] falha ao renovar pass:', err.message)
+    );
+  }
 
   console.log(`[sync] criados: ${criados.length}, expirados: ${expirados.length}, grupo: ${circleIdsNoGrupo.length}`);
   return { criados, expirados, total_grupo: circleIdsNoGrupo.length };

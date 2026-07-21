@@ -1,0 +1,14 @@
+{
+  "formatVersion": 1,
+  "storeCard": {
+    "primaryFields": [],
+    "secondaryFields": [],
+    "auxiliaryFields": [],
+    "backFields": []
+  },
+  "sharingProhibited": false,
+  "logoText": "Nosso Podcast de Cinema",
+  "backgroundColor": "rgb(138, 25, 126)",
+  "foregroundColor": "rgb(245, 239, 230)",
+  "labelColor": "rgb(201, 169, 143)"
+}

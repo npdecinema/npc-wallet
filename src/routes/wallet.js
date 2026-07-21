@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getMembersDueForRenewal } = require('../services/passService');
 const { updatePass } = require('../services/googleWallet');
+const { createOrUpdatePkpass } = require('../services/appleWallet');
 
 function verifyCronSecret(req, res, next) {
   const secret = req.headers['x-webhook-secret'];
@@ -19,6 +20,9 @@ router.post('/renew-batch', verifyCronSecret, async (req, res) => {
     for (const member of members) {
       try {
         await updatePass(member);
+        await createOrUpdatePkpass(member).catch(err =>
+          console.error('[apple] falha ao renovar pass:', err.message)
+        );
         results.push({ member_code: member.member_code, status: 'updated' });
       } catch (err) {
         results.push({ member_code: member.member_code, status: 'error', error: err.message });
