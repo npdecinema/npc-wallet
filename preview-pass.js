@@ -2,8 +2,8 @@ const path = require('path');
 const fs = require('fs');
 const { PKPass } = require('passkit-generator');
 
-const MODEL_PATH = path.join(__dirname, 'pass-models/npc.pass');
-const CERTS_DIR = path.join(__dirname, 'services/certs');
+const MODEL_PATH = path.join(__dirname, 'src/pass-models/npc.pass');
+const CERTS_DIR = path.join(__dirname, 'src/services/certs');
 
 // Dados de teste — mude à vontade pra simular diferentes membros
 const member = {
