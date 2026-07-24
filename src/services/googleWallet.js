@@ -68,7 +68,7 @@ async function ensureClass() {
 }
 
 function buildPassObject(member, objectId) {
-  const bgColor = process.env.CARD_BG_COLOR || '#8a197e';
+  const bgColor = process.env.CARD_BG_COLOR || '#AA170F';
   const validStr = new Date(member.valid_until).toLocaleDateString('pt-BR');
   const sinceStr = new Date(member.member_since).toLocaleDateString('pt-BR');
 

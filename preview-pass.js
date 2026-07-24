@@ -52,7 +52,7 @@ async function main() {
     message: `https://example.com/v/${member.member_code}/${member.validation_token}`,
     format: 'PKBarcodeFormatQR',
     messageEncoding: 'iso-8859-1',
-    altText: `Validade: ${validStr}`
+    // altText: `Validade: ${validStr}`
   });
 
   const buffer = await pass.getAsBuffer();

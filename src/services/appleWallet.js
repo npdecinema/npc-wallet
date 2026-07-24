@@ -74,7 +74,7 @@ async function buildPassBuffer(member) {
     message: `${SERVER_URL}/v/${member.member_code}/${member.validation_token}`,
     format: 'PKBarcodeFormatQR',
     messageEncoding: 'iso-8859-1',
-    altText: `Validade: ${validStr}`
+    // altText: `Validade: ${validStr}`
   });
 
   return pass.getAsBuffer();
