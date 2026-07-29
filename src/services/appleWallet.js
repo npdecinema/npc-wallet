@@ -66,7 +66,7 @@ async function buildPassBuffer(member) {
   pass.secondaryFields.push({ key: 'since', label: 'Membro desde', value: sinceStr });
   pass.auxiliaryFields.push({ key: 'until', label: 'Válido até', value: validStr });
   pass.backFields.push(
-    { key: 'plan', label: 'Plano', value: member.plan },
+    // { key: 'plan', label: 'Plano', value: member.plan },
     { key: 'info', label: 'Mais informações', value: 'https://npdecinema.circle.so/c/descontos' }
   );
 
