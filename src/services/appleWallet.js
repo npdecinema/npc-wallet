@@ -67,7 +67,7 @@ async function buildPassBuffer(member) {
   pass.auxiliaryFields.push({ key: 'until', label: 'Válido até', value: validStr });
   pass.backFields.push(
     { key: 'plan', label: 'Plano', value: member.plan },
-    { key: 'info', label: 'Mais informações', value: 'https://periprod.com/npdecinema' }
+    { key: 'info', label: 'Mais informações', value: 'https://npdecinema.circle.so/c/descontos' }
   );
 
   pass.setBarcodes({
