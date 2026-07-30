@@ -32,10 +32,10 @@ router.get('/:publicUid', async (req, res) => {
 
 function pagina(titulo, texto, googleWalletUrl, appleWalletUrl) {
   const botaoGoogle = googleWalletUrl
-    ? `<a href="${googleWalletUrl}" style="display:inline-block;background:#2a1a0e;color:#f5efe6;text-decoration:none;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:500;margin-bottom:12px">Adicionar ao Google Wallet</a>`
+    ? `<a href="${googleWalletUrl}"><img src="/images/wallet-button.png" alt="Adicionar ao Google Wallet" style="width:170px"></a>`
     : '';
   const botaoApple = appleWalletUrl
-    ? `<a href="${appleWalletUrl}" style="display:inline-block;background:#f5efe6;color:#2a1a0e;text-decoration:none;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:500;border:1px solid #2a1a0e">Adicionar ao Apple Wallet</a>`
+    ? `<a href="${appleWalletUrl}"><img src="/images/add-to-apple-wallet-logo.png" alt="Adicionar ao Apple Wallet" style="width:170px"></a>`
     : '';
 
   return `<!DOCTYPE html>
@@ -46,7 +46,7 @@ function pagina(titulo, texto, googleWalletUrl, appleWalletUrl) {
 <div style="max-width:420px;text-align:center;background:#f5efe6;border-radius:20px;padding:32px 24px">
 <h1 style="color:#2a1a0e;font-size:22px;margin:0 0 12px">${titulo}</h1>
 <p style="color:#8a6040;font-size:15px;line-height:1.5;margin:0 0 24px">${texto}</p>
-<div style="display:flex;flex-direction:column;align-items:center">
+<div style="display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
 ${botaoGoogle}
 ${botaoApple}
 </div>
