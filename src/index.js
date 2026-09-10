@@ -3,7 +3,6 @@ require('dns').setDefaultResultOrder('ipv4first');
 const express = require('express');
 const { initDb } = require('./db');
 const passesRouter = require('./routes/passes');
-const walletRouter = require('./routes/wallet');
 
 const app = express();
 app.use(express.json());
@@ -12,7 +11,6 @@ app.use('/images', express.static('public'));
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/webhook', passesRouter);
-app.use('/cron', walletRouter);
 app.use('/v', require('./routes/validate'));
 app.use('/sync', require('./routes/sync'));
 app.use('/carteirinha', require('./routes/carteirinha'));
