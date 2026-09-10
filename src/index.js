@@ -2,7 +2,6 @@ require('dotenv').config();
 require('dns').setDefaultResultOrder('ipv4first');
 const express = require('express');
 const { initDb } = require('./db');
-const passesRouter = require('./routes/passes');
 
 const app = express();
 app.use(express.json());
