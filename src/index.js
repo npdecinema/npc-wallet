@@ -9,7 +9,6 @@ app.use('/images', express.static('public'));
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
-app.use('/webhook', passesRouter);
 app.use('/v', require('./routes/validate'));
 app.use('/sync', require('./routes/sync'));
 app.use('/carteirinha', require('./routes/carteirinha'));
