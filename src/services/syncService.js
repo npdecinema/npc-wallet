@@ -3,7 +3,6 @@ const { createMember, cancelMember, getActiveCircleIds, expireRenewals } = requi
 const { createPass, deactivatePass } = require('./googleWallet');
 const { createOrUpdatePkpass } = require('./appleWallet');
 const { pool } = require('../db');
-// const { sendCarteirinhaEmail } = require('./email');
 
 async function syncSubscribers() {
   const circleIdsNoGrupo = (await listSubscriberIds()).map(String);
@@ -20,7 +19,6 @@ async function syncSubscribers() {
     await createOrUpdatePkpass(member).catch(err =>
       console.error('[apple] falha ao criar pass:', err.message)
     );
-    // await sendCarteirinhaEmail(member).catch(e => console.error('[email] falha:', e.message));
     criados.push(member.member_code);
   }
 
