@@ -104,4 +104,22 @@ async function getMemberByPublicUid(publicUid) {
   return rows[0] || null;
 }
 
-module.exports = { createMember, getMemberByCircleId, getMemberByPublicUid, cancelMember, renewMember, getMembersDueForRenewal, getActiveCircleIds, expireRenewals };
+async function getMemberByCode(memberCode) {
+  const { rows } = await pool.query(
+    'SELECT * FROM members WHERE member_code=$1',
+    [memberCode]
+  );
+  return rows[0] || null;
+}
+
+module.exports = {
+  createMember,
+  getMemberByCircleId,
+  getMemberByPublicUid,
+  getMemberByCode,
+  cancelMember,
+  renewMember,
+  getMembersDueForRenewal,
+  getActiveCircleIds,
+  expireRenewals
+};

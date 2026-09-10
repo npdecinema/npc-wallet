@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../db');
+const { getMemberByCode } = require('../services/passService');
 const { buildPassBuffer, authToken } = require('../services/appleWallet');
 
 // Extrai o token do header "Authorization: ApplePass <token>"
@@ -8,11 +9,6 @@ function verifyPassAuth(req, res, next) {
   const auth = req.headers.authorization || '';
   req._appleToken = auth.replace('ApplePass ', '').trim();
   next();
-}
-
-async function getMemberByCode(code) {
-  const { rows } = await pool.query('SELECT * FROM members WHERE member_code=$1', [code]);
-  return rows[0] || null;
 }
 
 // 1. Registrar dispositivo para receber atualizações de um pass
@@ -127,6 +123,8 @@ router.get('/download/:publicUid', async (req, res) => {
     const buffer = await buildPassBuffer(member);
     res.setHeader('Content-Type', 'application/vnd.apple.pkpass');
     res.setHeader('Content-Disposition', `attachment; filename="${member.member_code}.pkpass"`);
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
     res.send(buffer);
   } catch (err) {
     console.error('Apple download error:', err.message);
