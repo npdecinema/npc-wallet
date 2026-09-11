@@ -17,11 +17,16 @@ app.use('/apple', require('./routes/apple'));
 const PORT = process.env.PORT || 3000;
 
 const cron = require('node-cron');
-const { syncSubscribers } = require('./services/syncService');
+const { syncSubscribers, refreshMemberProfiles } = require('./services/syncService');
 
-// Roda a sincronização a cada 15 minutos
+// Sincronização principal — procurar novos membros a cada 15 minutos
 cron.schedule('*/15 * * * *', () => {
   syncSubscribers().catch(err => console.error('[cron] erro:', err.message));
+});
+
+// Refresh de perfil (name/email/plan) — semanal, todo domingo às 3h da manhã
+cron.schedule('0 3 * * 0', () => {
+  refreshMemberProfiles().catch(err => console.error('[cron-refresh] erro:', err.message));
 });
 
 async function start() {
