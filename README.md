@@ -86,11 +86,17 @@ que assinamos no Circle não permite automações usando webhooks). Um cron inte
 - compara quem está no grupo de acesso "Assinantes" do Circle com quem está
   no banco local
 - cria carteirinha (Google + Apple) pra quem entrou
-- desativa quem saiu
+- desativa quem saiu, expirando `valid_until` para a data atual e notificando o Apple Wallet via push
 - renova (+1 mês) quem está a 5 dias ou menos de vencer
 
 `POST /sync/subscribers` roda essa mesma lógica sob demanda, fora do
 cronograma — útil pra testar sem esperar o próximo ciclo.
+
+Um segundo cron roda semanalmente (domingo às 3h) e atualiza 
+nome/e-mail/plano de todo membro ativo, comparando com o Circle. Só reenvia 
+os passes (Google/Apple) para quem teve `name` ou `plan` de fato alterado — 
+evita reescrever e notificar todo mundo à toa. `POST /sync/refresh-profiles` 
+dispara isso manualmente.
 
 ## Endpoints
 
@@ -100,6 +106,7 @@ cronograma — útil pra testar sem esperar o próximo ciclo.
 | GET | `/carteirinha/:publicUid` | Página de entrega — gera os dois passes e mostra os botões de "Adicionar" |
 | GET | `/v/:code/:token` | Validação do QR code (ATIVO/INATIVO) |
 | POST | `/sync/subscribers` | Dispara a sincronização manualmente, fora do cron |
+| POST | `/sync/refresh-profiles` | Dispara o refresh de perfil manualmente, fora do cron |
 | GET | `/apple/download/:publicUid` | Download inicial do `.pkpass` |
 | * | `/apple/v1/...` | Web service do Apple Wallet (spec da Apple — registro de device, checagem de updates, reenvio do pass) |
 
@@ -121,7 +128,7 @@ cron interno (a cada 15 min) que roda `syncSubscribers()`.
 | `googleWallet.js` | Cria/atualiza/desativa o pass no Google Wallet via Wallet Objects API, incluindo a `genericClass` compartilhada. |
 | `appleWallet.js` | Gera o `.pkpass` (via `passkit-generator`) e dispara push (via APNs) pra atualizar passes já instalados. |
 | `circle.js` | Cliente da Admin API v2 do Circle.so — lista assinantes do grupo de acesso e busca detalhes de membro. |
-| `syncService.js` | Orquestra o cron de 15 min (criação, expiração, renovação), chamando `googleWallet.js` e `appleWallet.js`. |
+| `syncService.js` | Orquestra o cron de 15 min (criação, expiração, renovação), chamando `googleWallet.js` e `appleWallet.js`. Também expõe `refreshMemberProfiles()`, usada pelo cron de atualização de perfil. |
 
 ### `src/routes/`
 
