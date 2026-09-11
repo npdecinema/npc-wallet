@@ -53,7 +53,7 @@ async function getMemberByCircleId(circleId) {
 
 async function cancelMember(circleId) {
   const { rows } = await pool.query(
-    `UPDATE members SET status='inactive', updated_at=NOW()
+    `UPDATE members SET status='inactive', valid_until=CURRENT_DATE, updated_at=NOW()
      WHERE circle_id=$1 RETURNING *`,
     [circleId]
   );
