@@ -24,9 +24,15 @@ async function syncSubscribers() {
 
   const expirados = [];
   for (const circleId of sairam) {
-    const member = await cancelMember(circleId);
-    if (member) { await deactivatePass(member); expirados.push(member.member_code); }
+  const member = await cancelMember(circleId);
+  if (member) {
+    await deactivatePass(member);
+    await createOrUpdatePkpass(member).catch(err =>
+      console.error('[apple] falha ao expirar pass:', err.message)
+    );
+    expirados.push(member.member_code);
   }
+}
 
   await expireRenewals();
   const { rows } = await pool.query("SELECT * FROM members WHERE status='active' AND valid_until <= CURRENT_DATE + INTERVAL '5 days'");

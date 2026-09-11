@@ -21,7 +21,7 @@ async function createMember({ circleId, name, email, plan, validUntil, publicUid
     `INSERT INTO members (circle_id, name, email, plan, valid_until, member_code, validation_token, public_uid)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
      ON CONFLICT (circle_id) DO UPDATE
-       SET name=$2, email=$3, plan=$4, public_uid=$8, updated_at=NOW()
+      SET name=$2, email=$3, plan=$4, public_uid=$8, status='active', updated_at=NOW()
      RETURNING *`,
     [circleId, name, email, plan || 'Membro', vUntil, tempCode, token, publicUid || null]
   );
@@ -53,7 +53,7 @@ async function getMemberByCircleId(circleId) {
 
 async function cancelMember(circleId) {
   const { rows } = await pool.query(
-    `UPDATE members SET status='inactive', updated_at=NOW()
+    `UPDATE members SET status='inactive', valid_until=CURRENT_DATE, updated_at=NOW()
      WHERE circle_id=$1 RETURNING *`,
     [circleId]
   );

@@ -82,7 +82,7 @@ sem esperar os 15 minutos.
 
 Esse mecanismo mantém as carteirinhas em dia. Não usamos webhook porque o plano 
 que assinamos no Circle não permite automações usando webhooks). Um cron interno 
-(`node-cron`, dentro do próprio `src/index.js`) roda a cada 15 minutos e:
+(dentro do próprio `src/index.js`) roda a cada 15 minutos e:
 - compara quem está no grupo de acesso "Assinantes" do Circle com quem está
   no banco local
 - cria carteirinha (Google + Apple) pra quem entrou
